@@ -1,5 +1,6 @@
 import pygame
 import random
+from sys import exit
 
 v = -5
 dead = 0
