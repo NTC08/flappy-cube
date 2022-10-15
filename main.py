@@ -12,7 +12,7 @@ screen = pygame.display.set_mode((400, 700))
 pygame.display.set_caption("Flappy Cube")
 Clock = pygame.time.Clock()
 sky = pygame.image.load("flappy-bird/sky.png").convert_alpha()
-bird = pygame.image.load("flappy-bird/bird.png").convert_alpha()
+bird = pygame.image.load("flappy-bird/bird_up.png").convert_alpha()
 pipe_up = pygame.image.load("flappy-bird/pipe_up.png").convert_alpha()
 pipe_down = pygame.image.load("flappy-bird/pipe_down.png").convert_alpha()
 pygame.display.set_icon(bird)
@@ -31,7 +31,7 @@ flap_text_rec = text.get_rect(center = (210,300))
 
 #bird
 bird_rec = bird.get_rect(topleft = (100,350))
-bird_frame = 1
+bird_frame = 2
 
 #pipes
 q = random.randint(200,600)
@@ -66,21 +66,35 @@ while True:
                     pipe_up_rec2 = pipe_up.get_rect(midtop = (700,w))
                     pipe_down_rec2 = pipe_down.get_rect(midbottom = (700,w - 170))
                     score = 0
-
+    
+    if v <= 0:
+        bird_frame = 1
+    elif v >= 0:
+        bird_frame = 2
+        
     if start == 1:
         if bird_rec.colliderect(pipe_up_rec) or bird_rec.colliderect(pipe_down_rec) or bird_rec.colliderect(pipe_up_rec2) or bird_rec.colliderect(pipe_down_rec2):
             dead = 1
         if bird_rec.bottom > 700:
             dead = 1
-    
-        bird_rec.y += v
-    
-        v = v + 0.2
-    
-        pipe_up_rec.x -= 1
-        pipe_down_rec.x -= 1
-        pipe_up_rec2.x -= 1
-        pipe_down_rec2.x -= 1
+        
+        if dead == 1:
+            bird_frame = 3
+            
+        if bird_frame == 1:
+            bird = pygame.image.load('flappy-bird/bird_up.png').convert_alpha()
+        elif bird_frame == 2:
+            bird = pygame.image.load('flappy-bird/bird_down.png').convert_alpha()
+        elif bird_frame == 3:
+            bird = pygame.image.load('flappy-bird/bird_die.png').convert_alpha()
+            
+        if dead == 0:
+            bird_rec.y += v
+            v = v + 0.2
+            pipe_up_rec.x -= 2
+            pipe_down_rec.x -= 2
+            pipe_up_rec2.x -= 2
+            pipe_down_rec2.x -= 2
     
         if pipe_down_rec.x == bird_rec.x or pipe_down_rec2.x == bird_rec.x:
             score = score + 1
@@ -112,6 +126,7 @@ while True:
         elif dead == 1:
             screen.blit(text,(text_rec))
             screen.blit(over_text,(over_text_rec))
+            screen.blit(bird,(bird_rec))
     else:
         screen.blit(sky,(0,0))
         screen.blit(start_text,(start_text_rec))
